@@ -6,7 +6,7 @@ mkdir -p ./tmp ./data
 while IFS= read -r line; do
   filename=$(echo ${line} | awk -F ',' '{print $1}')
   IFS='|' read -r -a asns <<<$(echo ${line} | awk -F ',' '{print $2}')
-  file="data/${filename}"
+  file="data/${filename}_ip_list"
 
   echo "==================================="
   echo "Generating ${filename} CIDR list..."
