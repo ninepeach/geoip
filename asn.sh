@@ -10,14 +10,15 @@ while IFS= read -r line; do
 
   echo "==================================="
   echo "Generating ${filename} CIDR list..."
-  rm -rf ${file} && touch ${file}
+  rm -rf ${file}_ipv4 && touch ${file}_ipv4
+  rm -rf ${file}_ipv6 && touch ${file}_ipv6
   for asn in ${asns[@]}; do
     url="https://stat.ripe.net/data/ris-prefixes/data.json?list_prefixes=true&types=o&resource=${asn}"
     echo "-----------------------"
     echo "Fetching ${asn}..."
     curl -sL ${url} -o ./tmp/${filename}-${asn}.txt \
       -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36'
-    jq --raw-output '.data.prefixes.v4.originating[]' ./tmp/${filename}-${asn}.txt | sort -u >>${file}
-    jq --raw-output '.data.prefixes.v6.originating[]' ./tmp/${filename}-${asn}.txt | sort -u >>${file}
+    jq --raw-output '.data.prefixes.v4.originating[]' ./tmp/${filename}-${asn}.txt | sort -u >${file}_ipv4
+    jq --raw-output '.data.prefixes.v6.originating[]' ./tmp/${filename}-${asn}.txt | sort -u >${file}_ipv6
   done
 done <${input}
